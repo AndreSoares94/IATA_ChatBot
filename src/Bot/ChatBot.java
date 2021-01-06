@@ -1,89 +1,32 @@
 package Bot;
 
-import java.io.*;
+import org.alicebot.ab.*;
+import org.alicebot.ab.Chat;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.ClassNotFoundException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.stream.DoubleStream;
 
 public class ChatBot {
-
     //static ServerSocket variable
     private static ServerSocket server;
-
     //socket server port on which it will listen
     private static int port = 9876;
-
-    // Get total number of lines in responses.
-    private static int getLines(String filename) {
-        int lines = 0;
-
-        try(BufferedReader br = new BufferedReader(
-                new FileReader(filename))) {
-            while(br.readLine() != null) lines++;
-        } catch(IOException exc) {
-            System.out.println("I/O Exception: " + exc);
-        }
-
-        return lines;
-    }
-
-    // Get all responses.
-    private static String[] getResponsesArray(String filename, int lines) {
-        int lineCount = 0;
-
-        String line;
-        String[] responsesArray = new String[lines];
-
-        try(BufferedReader br = new BufferedReader(
-                new FileReader(filename))) {
-
-            do {
-                line = br.readLine();
-
-                if(line != null) {
-                    responsesArray[lineCount] = line;
-                    lineCount++;
-                }
-            } while(line != null);
-        } catch(FileNotFoundException exc) {
-            System.out.println("FileNotFoundException: " + exc);
-        } catch(IOException exc) {
-            System.out.println("I/O Exception: " + exc);
-        }
-
-        return responsesArray;
-    }
-
-    // Get ChatBot response to userInput
-    private static String getResponse(String[] responses, String userInput) {
-        String tag, response;
-        String[] array;
-
-        for(String responseLine: responses) {
-            if(responseLine != null) {
-                array = responseLine.split(" - ");
-                tag = array[0];
-                response = array[1];
-
-                if(tag.compareToIgnoreCase(userInput) == 0) {
-                    return response;
-                }
-            }
-        }
-        return "Sorry, i did not understand, please try again";
-    }
+    private static String botname;
 
     public static void main(String args[]) throws IOException, ClassNotFoundException{
         //create the socket server object
-        String filename = "src/Bot/responses.txt";
         server = new ServerSocket(port);
+        botname = "mybot";
 
-        int lines = getLines(filename);
-        String resposta;
-        String[] responsesArray = getResponsesArray(filename, lines);
+        String path = "src/Bot";
+        Bot bot = new Bot(botname, path);
+        Chat chatSession = new Chat(bot);
 
-        //SOCKET SERVER
+        //keep listens indefinitely until receives 'exit' call or program terminates
         while(true){
             System.out.println("Waiting for the user message");
             //creating socket and waiting for client connection
@@ -91,21 +34,21 @@ public class ChatBot {
             //read from socket to ObjectInputStream object
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
             //convert ObjectInputStream object to String
-            String userInput = (String) ois.readObject();
-            System.out.println("Message Received: " + userInput);
+            String message = (String) ois.readObject();
+            String answer = chatSession.multisentenceRespond(message);
+            System.out.println("Message Received: " + message);
             //create ObjectOutputStream object
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            resposta = getResponse(responsesArray, userInput);
             //write object to Socket
-            oos.writeObject(resposta);
+            oos.writeObject("Answer: "+answer);
             //close resources
             ois.close();
             oos.close();
             socket.close();
             //terminate the server if client sends exit request
-            if(userInput.equalsIgnoreCase("goodbye")) break;
+            if(message.equalsIgnoreCase("goodbye")) break;
         }
-        System.out.println("Shutting down ChatBot!");
+        System.out.println("Shutting down Socket Bot.ChatBot!");
         //close the ServerSocket object
         server.close();
     }

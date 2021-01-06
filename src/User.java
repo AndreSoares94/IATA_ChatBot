@@ -1,10 +1,9 @@
-package User;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.ClassNotFoundException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -43,6 +42,7 @@ public class User implements NativeKeyListener{
 
 
     public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException, InterruptedException{
+        //get the localhost IP address, if server is running on some other IP, you need to use that
         InetAddress host = InetAddress.getLocalHost();
         Socket socket = null;
         String message = "";
@@ -71,8 +71,8 @@ public class User implements NativeKeyListener{
 
         Scanner scanner = new Scanner(System. in);
 
-        System.out.print("--------------- Chat With ChatBot! --------------- \n>");
-        while(!message.equalsIgnoreCase("goodbye")){
+        System.out.print("Chat With Bot.ChatBot! \n>");
+        while(!message.equals("goodbye")){
             message = scanner. nextLine();
 
             //establish socket connection to server
@@ -90,12 +90,12 @@ public class User implements NativeKeyListener{
             //read the server response message
             ois = new ObjectInputStream(socket.getInputStream());
             String response = (String) ois.readObject();
-            System.out.println("ChatBot: " + response);
+            System.out.println("Bot.ChatBot: " + response);
         }
-        System.out.println("Shutting Down ChatBot");
         //close resources
         ois.close();
         oos.close();
+        Thread.sleep(100);
     }
 
     public static String decideEmotion(String log, int bs){
