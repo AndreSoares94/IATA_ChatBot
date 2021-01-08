@@ -74,7 +74,7 @@ public class User implements NativeKeyListener{
         Scanner scanner = new Scanner(System. in);
 
         System.out.print("Chat With Bot.ChatBot! \n>");
-        while(!message.equals("goodbye")){
+        while(!(message.equalsIgnoreCase("adeus"))){
             start = System.currentTimeMillis();
             message = scanner. nextLine();
             finish = System.currentTimeMillis();
@@ -113,7 +113,9 @@ public class User implements NativeKeyListener{
         //close resources
         ois.close();
         oos.close();
-        Thread.sleep(100);
+        socket.close();
+        scanner.close();
+
     }
 
     public static String decideEmotion(String log, int backspaces, long timeelapsed){

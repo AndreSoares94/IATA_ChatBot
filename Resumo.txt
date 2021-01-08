@@ -1,0 +1,48 @@
+User [neutral]: Ola;
+ChatBot: Ola para ti tambem.;
+ ----------------------------
+User [distraido]: ola;
+ChatBot: Ola, estava a ver que nao...;
+ ----------------------------
+User [stressado]: ola;
+ChatBot: Ola, vejo que estas stressado.;
+ ----------------------------
+User [neutral]: tudo bem?;
+ChatBot: Sim, esta tudo bem comigo! E contigo?;
+ ----------------------------
+User [stressado]: tudo bem?;
+ChatBot: Esta tudo bem, pareces stressado. Esta tudo bem contigo?;
+ ----------------------------
+User [distraido]: tudo bem?;
+ChatBot: Esta tudo bem, não estou tão distraido como tu. E contigo?;
+ ----------------------------
+User [neutral]: Esta tudo bem.;
+ChatBot: Ainda bem!;
+ ----------------------------
+User [stressado]: Esta tudo bem.;
+ChatBot: Não parece, estas um pouco stressado...;
+ ----------------------------
+User [distraido]: Esta tudo bem.;
+ChatBot: Ainda bem, mas pareces um pouco distraido;
+ ----------------------------
+User [neutral]: Quem és tu?;
+ChatBot: Eu sou ChatBot! Aqui para falar contigo.;
+ ----------------------------
+User [neutral]: Onde estas tu?;
+ChatBot: Um pouco por todo o lado.;
+ ----------------------------
+User [stressado]: gostas de André el CortaUnhas?;
+ChatBot: Com calma, até sou capaz de gostar de André el CortaUnhas;
+ ----------------------------
+User [distraido]: gostas de André el CortaUnhas?;
+ChatBot: Sou capaz de gostar de André el CortaUnhas se não estivesses tão distraido.;
+ ----------------------------
+User [stressado]: sim;
+ChatBot: Boa! Pode ser que te acalme.;
+ ----------------------------
+User [neutral]: não;
+ChatBot: hmmm...;
+ ----------------------------
+User [neutral]: adeus;
+ChatBot: Adeus! Até a próxima.;
+ ----------------------------

@@ -2,9 +2,8 @@ package Bot;
 
 import org.alicebot.ab.*;
 import org.alicebot.ab.Chat;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+
+import java.io.*;
 import java.lang.ClassNotFoundException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,6 +20,15 @@ public class ChatBot {
         server = new ServerSocket(port);
         botname = "empty";
 
+        // Resumo
+        File resumo = new File("Resumo.txt");
+        if(resumo.exists()){
+            resumo.delete();
+        }
+        BufferedWriter out = new BufferedWriter(new FileWriter(resumo, true));
+        String entrada = "";
+
+        // bot session
         String path = "src/Bot";
         Bot bot = new Bot(botname, path);
         Chat chatSession = new Chat(bot);
@@ -46,13 +54,18 @@ public class ChatBot {
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             //write object to Socket
             oos.writeObject("Answer: "+answer);
+            //write entrada do Resumo
+            entrada = "User ["+emotion+"]: "+message+";"+'\n'+"ChatBot: "+answer+";"+"\n ----------------------------";
+            out.write(entrada);
+            out.newLine();
             //close resources
             ois.close();
             oos.close();
             socket.close();
-            //terminate the server if client sends exit request
-            if(message.equalsIgnoreCase("goodbye")) break;
+            //terminate the server if user says "adeus"
+            if(message.equalsIgnoreCase("adeus")) break;
         }
+        out.close();
         System.out.println("Shutting down Socket Bot.ChatBot!");
         //close the ServerSocket object
         server.close();
