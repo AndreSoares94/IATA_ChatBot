@@ -4,9 +4,7 @@ import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -40,6 +38,7 @@ public class User implements NativeKeyListener{
 
 
     public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException, InterruptedException{
+
         //get the localhost IP address, if server is running on some other IP, you need to use that
         InetAddress host = InetAddress.getLocalHost();
         Socket socket = null;
@@ -52,6 +51,14 @@ public class User implements NativeKeyListener{
         long finish;
         String emotion = "";
         int edition = 0;
+
+        // Resumo
+        File resumo = new File("Resumo.txt");
+        if(resumo.exists()){
+            resumo.delete();
+        }
+        BufferedWriter out = new BufferedWriter(new FileWriter(resumo, true));
+        String entrada = "";
 
         /* Cenas para iniciar o logger: */
         try {
@@ -105,16 +112,22 @@ public class User implements NativeKeyListener{
                 response = scanner.nextLine();
                 System.out.println("Bot.ChatBot: " + response);
             }
-            else {
+            else{ if(c=='y') {
                 scanner.nextLine();
                 System.out.println("Bot.ChatBot: " + response);
+                }
             }
+            //write entrada do Resumo
+            entrada = "User ["+emotion+"]: "+message+";"+'\n'+"ChatBot: "+response+";"+"\n ----------------------------";
+            out.write(entrada);
+            out.newLine();
         }
         //close resources
         ois.close();
         oos.close();
         socket.close();
         scanner.close();
+        out.close();
 
     }
 

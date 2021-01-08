@@ -20,14 +20,6 @@ public class ChatBot {
         server = new ServerSocket(port);
         botname = "empty";
 
-        // Resumo
-        File resumo = new File("Resumo.txt");
-        if(resumo.exists()){
-            resumo.delete();
-        }
-        BufferedWriter out = new BufferedWriter(new FileWriter(resumo, true));
-        String entrada = "";
-
         // bot session
         String path = "src/Bot";
         Bot bot = new Bot(botname, path);
@@ -54,10 +46,6 @@ public class ChatBot {
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             //write object to Socket
             oos.writeObject(answer);
-            //write entrada do Resumo
-            entrada = "User ["+emotion+"]: "+message+";"+'\n'+"ChatBot: "+answer+";"+"\n ----------------------------";
-            out.write(entrada);
-            out.newLine();
             //close resources
             ois.close();
             oos.close();
@@ -65,7 +53,6 @@ public class ChatBot {
             //terminate the server if user says "adeus"
             if(message.equalsIgnoreCase("adeus")) break;
         }
-        out.close();
         System.out.println("Shutting down Socket Bot.ChatBot!");
         //close the ServerSocket object
         server.close();
