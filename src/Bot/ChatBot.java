@@ -53,7 +53,7 @@ public class ChatBot {
             //create ObjectOutputStream object
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             //write object to Socket
-            oos.writeObject("Answer: "+answer);
+            oos.writeObject(answer);
             //write entrada do Resumo
             entrada = "User ["+emotion+"]: "+message+";"+'\n'+"ChatBot: "+answer+";"+"\n ----------------------------";
             out.write(entrada);
