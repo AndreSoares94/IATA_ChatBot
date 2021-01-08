@@ -8,7 +8,6 @@ import java.io.ObjectOutputStream;
 import java.lang.ClassNotFoundException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.stream.DoubleStream;
 
 public class ChatBot {
     //static ServerSocket variable
@@ -20,7 +19,7 @@ public class ChatBot {
     public static void main(String args[]) throws IOException, ClassNotFoundException{
         //create the socket server object
         server = new ServerSocket(port);
-        botname = "mybot";
+        botname = "empty";
 
         String path = "src/Bot";
         Bot bot = new Bot(botname, path);
@@ -33,8 +32,14 @@ public class ChatBot {
             Socket socket = server.accept();
             //read from socket to ObjectInputStream object
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            //convert ObjectInputStream object to String
-            String message = (String) ois.readObject();
+            //convert ObjectInputStream object to UserInfo
+            UserInfo userInfo = (UserInfo) ois.readObject();
+            //split message and emotion part:
+            String message = userInfo.getChatString();
+            String emotion = userInfo.getEmotion();
+            // Set emotion
+            chatSession.multisentenceRespond("EMOTION "+emotion);
+            //gets answer to message:
             String answer = chatSession.multisentenceRespond(message);
             System.out.println("Message Received: " + message);
             //create ObjectOutputStream object

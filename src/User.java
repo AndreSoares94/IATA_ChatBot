@@ -1,17 +1,16 @@
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.ClassNotFoundException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Scanner;
+import Bot.UserInfo;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,7 +18,6 @@ public class User implements NativeKeyListener{
 
     static String log = "";
     static int backspace = 0;
-
     /* Key Pressed */
     public void nativeKeyPressed(NativeKeyEvent e) {
         //System.out.println("Key Pressed: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
@@ -35,7 +33,7 @@ public class User implements NativeKeyListener{
         // System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
     }
 
-    /* I can't find any output from this call */
+    /* can't find any output from this call */
     public void nativeKeyTyped(NativeKeyEvent e) {
         System.out.println("Key Typed: " + e.getKeyChar());
     }
@@ -46,10 +44,14 @@ public class User implements NativeKeyListener{
         InetAddress host = InetAddress.getLocalHost();
         Socket socket = null;
         String message = "";
+        String sugestao = "";
         ObjectOutputStream oos = null;
         ObjectInputStream ois = null;
-
+        long timeElapsed = 0;
+        long start;
+        long finish;
         String emotion = "";
+        int edition = 0;
 
         /* Cenas para iniciar o logger: */
         try {
@@ -73,24 +75,40 @@ public class User implements NativeKeyListener{
 
         System.out.print("Chat With Bot.ChatBot! \n>");
         while(!message.equals("goodbye")){
+            start = System.currentTimeMillis();
             message = scanner. nextLine();
+            finish = System.currentTimeMillis();
+            timeElapsed = finish - start;
 
             //establish socket connection to server
             socket = new Socket(host.getHostName(), 9876);
             //write to socket using ObjectOutputStream
             oos = new ObjectOutputStream(socket.getOutputStream());
 
-            //System.out.println("log: "+ log);
-            emotion = decideEmotion(log, backspace);
-            System.out.println("(" + emotion + ")");
-            oos.writeObject(message);
+
+            emotion = decideEmotion(log, backspace, timeElapsed);
+            UserInfo userInfo = new UserInfo(message, emotion);
+            System.out.println("emotion: " + userInfo.getEmotion());
+            oos.writeObject(userInfo);
             backspace = 0;
             log = "";
 
             //read the server response message
             ois = new ObjectInputStream(socket.getInputStream());
             String response = (String) ois.readObject();
-            System.out.println("Bot.ChatBot: " + response);
+
+            System.out.println("Premir y/n para aceitar: [sugestão] "+response);
+
+            char c = scanner.next().charAt(0);
+            if(c=='n'){
+                scanner.nextLine();
+                response = scanner.nextLine();
+                System.out.println("Bot.ChatBot: " + response);
+            }
+            else {
+                scanner.nextLine();
+                System.out.println("Bot.ChatBot: " + response);
+            }
         }
         //close resources
         ois.close();
@@ -98,9 +116,11 @@ public class User implements NativeKeyListener{
         Thread.sleep(100);
     }
 
-    public static String decideEmotion(String log, int bs){
+    public static String decideEmotion(String log, int backspaces, long timeelapsed){
         // se deu mais de 5 backspaces está distraído:
-        if (bs > 5) return "distracted";
+        if (backspaces > 5) return "stressado";
+        if (timeelapsed > 12000) return "distraido";
         return "neutral";
+
     }
 }
