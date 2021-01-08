@@ -43,14 +43,14 @@ public class User implements NativeKeyListener{
         InetAddress host = InetAddress.getLocalHost();
         Socket socket = null;
         String message = "";
-        String sugestao = "";
+        //String sugestao = "";
         ObjectOutputStream oos = null;
         ObjectInputStream ois = null;
         long timeElapsed = 0;
         long start;
         long finish;
         String emotion = "";
-        int edition = 0;
+        //int edition = 0;
 
         // Resumo
         File resumo = new File("Resumo.txt");
@@ -77,10 +77,10 @@ public class User implements NativeKeyListener{
         // Don't forget to disable the parent handlers.
         logger.setUseParentHandlers(false);
         GlobalScreen.addNativeKeyListener(new User());
-
+        char c = 'i';
         Scanner scanner = new Scanner(System. in);
 
-        System.out.print("Chat With Bot.ChatBot! \n>");
+        System.out.print("Conversa com o Bot.ChatBot! \n>");
         while(!(message.equalsIgnoreCase("adeus"))){
             start = System.currentTimeMillis();
             message = scanner. nextLine();
@@ -92,10 +92,9 @@ public class User implements NativeKeyListener{
             //write to socket using ObjectOutputStream
             oos = new ObjectOutputStream(socket.getOutputStream());
 
-
             emotion = decideEmotion(log, backspace, timeElapsed);
             UserInfo userInfo = new UserInfo(message, emotion);
-            System.out.println("emotion: " + userInfo.getEmotion());
+            System.out.println("Estado: " + userInfo.getEmotion());
             oos.writeObject(userInfo);
             backspace = 0;
             log = "";
@@ -104,23 +103,24 @@ public class User implements NativeKeyListener{
             ois = new ObjectInputStream(socket.getInputStream());
             String response = (String) ois.readObject();
 
-            System.out.println("Premir y/n para aceitar: [sugestão] "+response);
-
-            char c = scanner.next().charAt(0);
-            if(c=='n'){
+            while(c != 'n' && c != 'y') {
+                System.out.println("Premir y/n para aceitar: [sugestão] " + response);
+                c = scanner.next().charAt(0);
+            }
+            if (c == 'n') {
+                System.out.println("Que resposta preferia que o ChatBot desse?");
                 scanner.nextLine();
                 response = scanner.nextLine();
                 System.out.println("Bot.ChatBot: " + response);
-            }
-            else{ if(c=='y') {
+            }else{
                 scanner.nextLine();
                 System.out.println("Bot.ChatBot: " + response);
-                }
             }
             //write entrada do Resumo
             entrada = "User ["+emotion+"]: "+message+";"+'\n'+"ChatBot: "+response+";"+"\n ----------------------------";
             out.write(entrada);
             out.newLine();
+            c = 'i';
         }
         //close resources
         ois.close();
@@ -128,7 +128,6 @@ public class User implements NativeKeyListener{
         socket.close();
         scanner.close();
         out.close();
-
     }
 
     public static String decideEmotion(String log, int backspaces, long timeelapsed){
