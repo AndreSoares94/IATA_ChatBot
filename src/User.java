@@ -14,13 +14,11 @@ import java.util.logging.Logger;
 
 public class User implements NativeKeyListener{
 
-    static String log = "";
     static int backspace = 0;
     /* Key Pressed */
     public void nativeKeyPressed(NativeKeyEvent e) {
         //System.out.println("Key Pressed: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
         /* Terminate program when one press ESCAPE */
-        log += NativeKeyEvent.getKeyText(e.getKeyCode());
         if (e.getKeyCode() == NativeKeyEvent.VC_BACKSPACE) {
             backspace++;
         }
@@ -37,7 +35,7 @@ public class User implements NativeKeyListener{
     }
 
 
-    public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException, InterruptedException{
+    public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException, InterruptedException, NativeHookException {
 
         //get the localhost IP address, if server is running on some other IP, you need to use that
         InetAddress host = InetAddress.getLocalHost();
@@ -80,9 +78,10 @@ public class User implements NativeKeyListener{
         char c = 'i';
         Scanner scanner = new Scanner(System. in);
 
-        System.out.print("Conversa com o Bot.ChatBot! \n>");
+        System.out.print("Conversa com o Bot.ChatBot!\n");
         while(!(message.equalsIgnoreCase("adeus"))){
             start = System.currentTimeMillis();
+            System.out.print(">");
             message = scanner. nextLine();
             finish = System.currentTimeMillis();
             timeElapsed = finish - start;
@@ -92,12 +91,11 @@ public class User implements NativeKeyListener{
             //write to socket using ObjectOutputStream
             oos = new ObjectOutputStream(socket.getOutputStream());
 
-            emotion = decideEmotion(log, backspace, timeElapsed);
+            emotion = decideEmotion(message, backspace, timeElapsed);
             UserInfo userInfo = new UserInfo(message, emotion);
             System.out.println("Estado: " + userInfo.getEmotion());
             oos.writeObject(userInfo);
             backspace = 0;
-            log = "";
 
             //read the server response message
             ois = new ObjectInputStream(socket.getInputStream());
@@ -122,7 +120,9 @@ public class User implements NativeKeyListener{
             out.newLine();
             c = 'i';
         }
-        //close resources
+        //close resources && shutdown keylogger
+        GlobalScreen.unregisterNativeHook();
+
         ois.close();
         oos.close();
         socket.close();
@@ -131,8 +131,15 @@ public class User implements NativeKeyListener{
     }
 
     public static String decideEmotion(String log, int backspaces, long timeelapsed){
-        // se deu mais de 5 backspaces está distraído:
+        if((log.contains("triste") || log.contains("desanimado") || log.contains("desagradado")) && !log.contains("não")){
+            return "triste";
+        }
+        if((log.contains("feliz") || log.contains("contente") || log.contains("agradado"))  && !log.contains("não")){
+            return "feliz";
+        }
+        // se deu mais de 5 backspaces está stressado:
         if (backspaces > 5) return "stressado";
+        // se demorar + de 12 s está distraido:
         if (timeelapsed > 12000) return "distraido";
         return "neutral";
 
