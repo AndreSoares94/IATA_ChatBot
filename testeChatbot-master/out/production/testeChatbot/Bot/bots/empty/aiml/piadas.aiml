@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+
+<category>
+    <pattern>Conta * piada</pattern>
+    <template><random>
+        <li>Estavam dois piolhos na careca de um senhor, e diz um para o outro: "Alfredo, vamos embora que este piso é escorregadio!"  </li>
+        <li>Era uma vez um rádio tão pequeno tão pequeno tão pequeno que em vez de estações apanhava apeadeiros.  </li>
+        <li>Era uma vez um esquilo tão leve, tão leve, tão leve que se chamava Esgrama.  </li>
+        <li>Ha 10 tipos de pessoas no mundo: as que sabem ler em binário e as que não sabem... </li>
+        <li>Qual a panela que está sempre triste? A panela depressão </li>
+        <li>O que é que o advogado da galinha foi fazer à esquadra? Foi soltar a franga! </li>
+        <li>Porque é que os comunistas odeiam conduzir? Porque têm de dar prioridade á direita.  </li>
+        <li>O que disse o açúcar ao leite? Encontramo-nos já no café!  </li>
+        <li>O que é que disse uma pulga a outra pulga? Vamos a pé, ou esperamos por um cão? </li>
+    </random></template>
+</category>
+
+</aiml>
