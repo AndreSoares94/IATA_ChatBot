@@ -1,9 +1,12 @@
 User [neutral]: ola;
 ChatBot: Ola para ti tambem.;
  ----------------------------
-User [triste]: estou triste;
-ChatBot: Prazer em conhecer-te, triste, vejo que estas triste;
+User [neutral]: tudo bem;
+ChatBot: Sim, esta tudo bem comigo! E contigo?;
  ----------------------------
-User [neutral]: adeus;
-ChatBot: Adeus! Até a próxima.;
+User [neutral]: tambem;
+ChatBot: Ainda bem;
+ ----------------------------
+User [stressado]: adeus;
+ChatBot: Adeus! Espero que consigas acalmar te.;
  ----------------------------
